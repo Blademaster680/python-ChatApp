@@ -4,6 +4,10 @@ Server for multithreaded (asynchronous) chat application.
 """
 from socket import AF_INET, socket, SOCK_STREAM
 from threading import Thread
+from os import system
+
+
+system("title Chatter Server by Blademaster680")
 
 
 def accept_incoming_connections():
@@ -13,8 +17,8 @@ def accept_incoming_connections():
     while True:
         client, client_address = SERVER.accept()
         print("%s:%s has connected." % client_address)
-        client.send(bytes("Greetings from the cave!"+
-                          "Now type your name and press enter!", "utf8"))
+        client.send(bytes("Greetings!\n"+
+                          "Please type your name and press enter!", "utf8"))
         addresses[client] = client_address
         Thread(target=handle_client, args=(client,)).start()
 
@@ -26,20 +30,21 @@ def handle_client(client):
     :return:
     """
     name = client.recv(BUFSIZ).decode("utf8")
-    welcome = 'Welcome %s! If you ever want to quit, type {quit} to exit.' % name
+    welcome = 'Welcome %s!' % name
     client.send(bytes(welcome, "utf8"))
     msg = "%s has joined the chat!" % name
     broadcast(bytes(msg, "utf8"))
     clients[client] = name
     while True:
         msg = client.recv(BUFSIZ)
-        if msg != bytes("{quit", "utf8"):
+        if msg != bytes("{quit}", "utf8"):
             broadcast(msg, name+": ")
         else:
-            client.send(bytes("{quit", "utf8"))
+            print("We are in the else!")
             client.close()
             del clients[client]
-            broadcast(bytes("%s has left the chat." % name, "utf8"))
+            broadcast(bytes("%s has left the chat." % client, "utf8"))
+            print("%s has disconnected" % client)
             break
 
 

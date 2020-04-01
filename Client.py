@@ -14,8 +14,9 @@ def recieve():
     """
     while True:
         try:
-            msg = client_socket.recv(BUFFSIZ).decode("utf8")
-            msg_list.insert(tkinter.END, msg)
+            msg = client_socket.recv(BUFFSIZ).decode("utf8") + "\n"
+            msg_text.insert(tkinter.END, msg)
+            msg_text.see(tkinter.END)
         except OSError:
             break
 
@@ -45,16 +46,14 @@ def on_closing(event=None):
 # The GUI
 
 top = tkinter.Tk()
-top.title("Chatter App")
+top.title("Chatter App by Blademaster680")
 
 messages_frame = tkinter.Frame(top)
 my_msg = tkinter.StringVar() # For the messages to be send.
 scrollbar = tkinter.Scrollbar(messages_frame) # To navigate through past messages
 
-msg_list = tkinter.Listbox(messages_frame, height=15, width=50, yscrollcommand=scrollbar.set)
-scrollbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
-msg_list.pack(side=tkinter.LEFT, fill=tkinter.BOTH)
-msg_list.pack()
+msg_text = tkinter.Text(top, height=15, width=50)
+msg_text.pack()
 
 messages_frame.pack()
 
